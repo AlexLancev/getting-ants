@@ -1,53 +1,41 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form } from 'antd';
 
 import { TableComponent } from './components/TableComponent';
 import { AddRecordModal } from './components/AddRecordModal';
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
+import { DataType, AddRecordValues } from './types/index';
 
-const initialData: DataType[] = [
-  {
-    key: '1',
-    name: 'Aleksei Vavulo',
-    age: 36,
-    address: 'Russia',
-  },
-];
+import { toggleModal, addRecord, deleteRecord } from './store/slice';
+import { RootState } from './store';
 
 export const App: React.FC = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>(initialData);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const dispatch = useDispatch();
+  const { dataSource, isModalOpen } = useSelector((state: RootState) => state.data);
   const [form] = Form.useForm();
 
-  const showModal = useCallback(() => {
-    setIsModalOpen(true);
-  }, []);
+  const showModal = () => dispatch(toggleModal(true));
 
-  const handleCancel = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
+  const handleCancel = () => {
+    dispatch(toggleModal(false));
+    form.resetFields();
+  };
 
-  const handleAdd = useCallback((values: { name: string; age: number; address: string }) => {
+  const handleAdd = (values: AddRecordValues) => {
     const newRecord: DataType = {
       key: (dataSource.length + 1).toString(),
       name: values.name,
       age: values.age,
       address: values.address,
     };
-    setDataSource(prev => [...prev, newRecord]);
-    form.resetFields();
+    dispatch(addRecord(newRecord));
     handleCancel();
-  }, [dataSource, form, handleCancel]);
+  };
 
-  const handleDelete = useCallback((key: string) => {
-    setDataSource(prev => prev.filter(item => item.key !== key));
-  }, []);
+  const handleDelete = (key: string) => {
+    dispatch(deleteRecord(key));
+  };
 
   return (
     <>

@@ -1,5 +1,7 @@
-import React from 'react';
-import { Modal, Form, Input, FormInstance } from 'antd';
+import React from "react";
+import { Modal, Form, Input, FormInstance } from "antd";
+
+import { validationRules } from "../../utils/validationSchema";
 
 interface AddRecordModalProps {
   isModalOpen: boolean;
@@ -8,16 +10,38 @@ interface AddRecordModalProps {
   form: FormInstance;
 }
 
-export const AddRecordModal: React.FC<AddRecordModalProps> = ({ isModalOpen, onClose, onAdd, form }) => (
-  <Modal title="Добавить запись" open={isModalOpen} onCancel={onClose} onOk={() => form.submit()}>
+export const AddRecordModal: React.FC<AddRecordModalProps> = ({
+  isModalOpen,
+  onClose,
+  onAdd,
+  form,
+}) => (
+  <Modal
+    title="Добавить запись"
+    open={isModalOpen}
+    onCancel={onClose}
+    onOk={() => form.submit()}
+  >
     <Form form={form} layout="vertical" onFinish={onAdd}>
-      <Form.Item name="name" label="Имя" rules={[{ required: true, message: 'Пожалуйста, введите имя!' }]}>
+      <Form.Item
+        name="name"
+        label="Имя"
+        rules={validationRules.name}
+      >
         <Input />
       </Form.Item>
-      <Form.Item name="age" label="Возраст" rules={[{ required: true, message: 'Пожалуйста, введите возраст!' }]}>
+      <Form.Item
+        name="age"
+        label="Возраст"
+        rules={validationRules.age}
+      >
         <Input type="number" />
       </Form.Item>
-      <Form.Item name="address" label="Адрес" rules={[{ required: true, message: 'Пожалуйста, введите адрес!' }]}>
+      <Form.Item
+        name="address"
+        label="Адрес"
+        rules={validationRules.address}
+      >
         <Input />
       </Form.Item>
     </Form>
